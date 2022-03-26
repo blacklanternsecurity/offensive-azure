@@ -64,7 +64,7 @@ arg_parser.add_argument('-o',
 						metavar='<filename>',
 						dest='outfile_path',
 						type=str,
-						help='(string) The path/filename of where you want the new token data (json object) saved.\nIf not supplied, script defaults to "./YYYY-MM-DD_HH-SS_<resource>_token.json"',
+						help='(string) The path/filename of where you want the new token data (json object) saved.\nIf not supplied, script defaults to "./YYYY-MM-DD_HH-MM-SS_<resource>_token.json"',
 						required=False)
 
 args = arg_parser.parse_args()
