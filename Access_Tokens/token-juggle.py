@@ -23,7 +23,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os, requests, sys, argparse, colorama, time, json
 
-
 # Set up our colors
 colorama.init()
 success = colorama.Fore.GREEN
