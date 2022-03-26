@@ -36,36 +36,35 @@ description = '''
 '''
 
 arg_parser = argparse.ArgumentParser(prog='token-juggle.py', 
-									 usage=success + '%(prog)s' + warning + ' <resource> ' + reset +'[-r \'refresh_token\' | -R \'./path/to/refresh_token.json\']', 
-									 description=description,
-									 formatter_class=argparse.RawDescriptionHelpFormatter
-									 )
+				     usage=success + '%(prog)s' + warning + ' <resource> ' + reset +'[-r \'refresh_token\' | -R \'./path/to/refresh_token.json\']', 
+				     description=description,
+			             formatter_class=argparse.RawDescriptionHelpFormatter)
 arg_parser.add_argument('Resource',
-						metavar='resource',
-						type=str,
-						help='The target Microsoft/Azure resource.\nChoose from the following: ' + str(resource_choices).replace('\'', '').replace('[','').replace(']',''),
-						choices=resource_choices)
+			metavar='resource',
+			type=str,
+			help='The target Microsoft/Azure resource.\nChoose from the following: ' + str(resource_choices).replace('\'', '').replace('[','').replace(']',''),
+			choices=resource_choices)
 arg_parser.add_argument('-r',
-						'--refresh_token',
-						metavar='<refresh_token>',
-						dest='refresh_token',
-						type=str,
-						help='(string) The refresh token you would like to use.',
-						required=False)
+			'--refresh_token',
+			metavar='<refresh_token>',
+			dest='refresh_token',
+			type=str,
+			help='(string) The refresh token you would like to use.',
+			required=False)
 arg_parser.add_argument('-R',
-						'--refresh_token_file',
-						metavar='<refresh_token_file>',
-						dest='refresh_token_file',
-						type=str,
-						help='(string) A JSON file saved from this script containing the refresh token you would like to use.',
-						required=False)
+			'--refresh_token_file',
+			metavar='<refresh_token_file>',
+			dest='refresh_token_file',
+			type=str,
+			help='(string) A JSON file saved from this script containing the refresh token you would like to use.',
+			required=False)
 arg_parser.add_argument('-o',
-						'--outfile',
-						metavar='<filename>',
-						dest='outfile_path',
-						type=str,
-						help='(string) The path/filename of where you want the new token data (json object) saved.\nIf not supplied, script defaults to "./YYYY-MM-DD_HH-MM-SS_<resource>_token.json"',
-						required=False)
+			'--outfile',
+			metavar='<filename>',
+			dest='outfile_path',
+			type=str,
+			help='(string) The path/filename of where you want the new token data (json object) saved.\nIf not supplied, script defaults to "./YYYY-MM-DD_HH-MM-SS_<resource>_token.json"',
+			required=False)
 
 args = arg_parser.parse_args()
 
@@ -145,7 +144,7 @@ else:
 
 # Setting up our post request
 headers = {
-    'User-Agent': user_agent
+	'User-Agent': user_agent
 }
 
 data = {
