@@ -2,6 +2,8 @@
 
 Requests a new access token for a Microsoft/Azure resource using a refresh token.
 
+Original inspiration comes directly from [rvrsh3ll](https://twitter.com/424f424f) and his [TokenTactics](https://github.com/rvrsh3ll/TokenTactics) project. 
+
 This script will attempt to load a refresh token from a REFRESH_TOKEN environment variable if none is passed with `-r` or `-R`.
 
 After a successful refresh to a new access+refresh token pair, the response output will be saved to where you specify with `-o|--outfile`. If you do not specify an outfile, then it will be saved to `./YYYY-MM-DD_HH-MM-SS_<resource>_token.json`. These can be passed back to the script for further use.
