@@ -2,11 +2,20 @@
 
 This module is a port of many different cmdlets from [AADInternals](https://github.com/Gerenios/AADInternals). It only requires a domain to be supplied to run successfully. Enumerated information includes:
 
-- tenant OpenID configuration
-- domain login information
-- domain information
-- tenant id extraction
-- other domains under the shared tenant
+- Tenant OpenID configuration
+- Domain login information
+- Domain information
+- Tenant ID extraction
+- Other domains under the shared tenant
+
+## Installation
+
+```bash
+git clone https://github.com/blacklanternsecurity/offensive-azure.git
+cd ./offensive-azure/Outsider_Recon/
+pipenv shell
+pip install -r requirements.txt
+```
 
 ## Usage
 
