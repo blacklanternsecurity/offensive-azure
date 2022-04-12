@@ -41,7 +41,8 @@ resource_choices = [
 	'office_apps',
 	'office_manage',
 	'outlook',
-	'substrate'
+	'substrate',
+	'm365_admin'
 ]
 
 description = '''
@@ -102,6 +103,7 @@ office_apps = 'https://officeapps.live.com' # Microsoft Office Apps
 office_manage = 'https://manage.office.com' # Microsoft Office Management
 outlook = 'https://outlook.office365.com' # Microsoft Outlook
 substrate = 'https://substrate.office.com' # Substrate
+m365_admin = 'https://admin.microsoft.com' # Microsoft 365 Admin Center
 
 # User agent to use with requests
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0' # Firefox User Agent
@@ -131,6 +133,8 @@ elif args.Resource == 'outlook':
 	resource = outlook
 elif args.Resource == 'substrate':
 	resource = substrate
+elif args.Resource == 'm365_admin':
+	resource = m365_admin
 else:
 	print(danger, '\nYou provided in invalid resource name.')
 	print(reset)
