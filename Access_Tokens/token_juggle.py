@@ -216,21 +216,21 @@ data = {
 URI = 'https://login.microsoftonline.com/Common/oauth2/token'
 
 # Sending the request
-json_data = ''
+JSON_DATA = {}
 try:
 	response = requests.post(URI, data=data, headers=headers)
-	json_data = response.json()
+	JSON_DATA = response.json()
 	response.raise_for_status()
 except requests.exceptions.HTTPError as he:
 	print(danger)
-	print(json_data['error'])
-	print(json_data['error_description'])
+	print(JSON_DATA['error'])
+	print(JSON_DATA['error_description'])
 	print(reset)
 	sys.exit()
 
 # Write the new token data to file
 with open(outfile, 'w+', encoding='UTF-8') as f:
-	f.write(json.dumps(json_data))
+	f.write(json.dumps(JSON_DATA))
 	f.close()
 
 # Show the user the requested access and refresh tokens
