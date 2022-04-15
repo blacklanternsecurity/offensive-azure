@@ -110,7 +110,7 @@ if outfile is None:
 # Windows Core Management
 WIN_CORE_MANAGEMENT = 'https://management.core.windows.net'
 
-# Azure Management 
+# Azure Management
 	# (For use in Az [powershell-will not access AzAD cmdlets without also supplying graph token])
 AZURE_MANAGEMENT = 'https://management.azure.com'
 
@@ -216,6 +216,7 @@ data = {
 URI = 'https://login.microsoftonline.com/Common/oauth2/token'
 
 # Sending the request
+json_data = ''
 try:
 	response = requests.post(URI, data=data, headers=headers)
 	json_data = response.json()
