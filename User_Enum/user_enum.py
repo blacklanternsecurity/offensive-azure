@@ -19,15 +19,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
 import argparse
-import colorama
 import time
 import json
-import requests
 import uuid
 from datetime import datetime
 from datetime import timezone
 from datetime import timedelta
 import xml.etree.ElementTree as ET
+import colorama
+import requests
 
 # Set up our colors
 colorama.init()
@@ -286,7 +286,7 @@ elif args.method == 'autologon':
 			response_code = xml_response[1][0][2][0][1][1].text.split(':')[0]
 
 			if response_code == 'AADSTS50053':
-				# The account is locked, you've tried to sign in 
+				# The account is locked, you've tried to sign in
 				# too many times with an incorrect user ID or password.
 				EXISTS = 'LOCKED'
 			elif response_code == 'AADSTS50126':
