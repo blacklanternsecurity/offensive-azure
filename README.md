@@ -11,3 +11,6 @@ Collection of offensive tools targeting Microsoft Azure written in Python to be 
   - Takes in a refresh token in various ways and retrieves a new refresh token and an access token for the resource specified
 - [`./Outsider_Recon/outsider-recon.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Outsider_Recon)
   - Takes in a domain and enumerates as much information as possible about the tenant without requiring authentication 
+- [`./User_Enum/user-enum.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/User_Enum)
+  - Takes in a username or list of usernames and attempts to enumerate valid accounts using one of three methods
+  - Can also be used to perform a password spray
