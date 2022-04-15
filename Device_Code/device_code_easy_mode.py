@@ -55,15 +55,15 @@ OUTLOOK = 'https://outlook.office365.com'
 # Substrate
 SUBSTRATE = 'https://substrate.office.com'
 
-# Set resource to one of the above resources you want to target
+# Set RESOURCE to one of the above resources you want to target
 # You can always use a refresh token to request one of these later,
 # but if you just know what you want you can set it here:
 RESOURCE = GRAPH
 
-post_data = {"resource": resource, "client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c"}
+post_data = {"resource": RESOURCE, "client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c"}
 start_time = time.time()
 
-r = requests.post(get_device_code_endpoint, data=post_data)
+r = requests.post(GET_DEVICE_CODE_ENDPOINT, data=post_data)
 
 response_json = json.loads(r.text)
 
