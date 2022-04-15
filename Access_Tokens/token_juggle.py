@@ -32,10 +32,10 @@ import colorama
 
 # Set up our colors
 colorama.init()
-success = colorama.Fore.GREEN
-danger = colorama.Fore.RED
-warning = colorama.Fore.YELLOW
-reset = colorama.Style.RESET_ALL
+SUCCESS = colorama.Fore.GREEN
+DANGER = colorama.Fore.RED
+WARNING = colorama.Fore.YELLOW
+RESET = colorama.Style.RESET_ALL
 
 # Setup argparse stuff
 resource_choices = [
@@ -62,8 +62,8 @@ DESCRIPTION = '''
 '''
 
 arg_parser = argparse.ArgumentParser(prog='token_juggle.py',
-				usage=success + '%(prog)s' + warning + ' <resource> ' + \
-				reset +'[-r \'refresh_token\' | -R \'./path/to/refresh_token.json\']',
+				usage=SUCCESS + '%(prog)s' + WARNING + ' <resource> ' + \
+				RESET +'[-r \'refresh_token\' | -R \'./path/to/refresh_token.json\']',
 				description=DESCRIPTION,
 				formatter_class=argparse.RawDescriptionHelpFormatter)
 arg_parser.add_argument('Resource',
@@ -172,8 +172,8 @@ elif args.Resource == 'substrate':
 elif args.Resource == 'm365_admin':
 	RESOURCE = M365_ADMIN
 else:
-	print(danger, '\nYou provided in invalid resource name.')
-	print(reset)
+	print(DANGER, '\nYou provided in invalid resource name.')
+	print(RESET)
 	arg_parser.print_help()
 	sys.exit()
 
@@ -184,7 +184,7 @@ if args.refresh_token is None and args.refresh_token_file is None:
 	try:
 		REFRESH_TOKEN = os.environ['REFRESH_TOKEN']
 	except KeyError as ke:
-		print(danger, '\n\tNo refresh token found.\n', reset)
+		print(DANGER, '\n\tNo refresh token found.\n', RESET)
 		arg_parser.print_help()
 		sys.exit()
 elif args.refresh_token is None:
@@ -222,10 +222,10 @@ try:
 	JSON_DATA = response.json()
 	response.raise_for_status()
 except requests.exceptions.HTTPError as he:
-	print(danger)
+	print(DANGER)
 	print(JSON_DATA['error'])
 	print(JSON_DATA['error_description'])
-	print(reset)
+	print(RESET)
 	sys.exit()
 
 # Write the new token data to file
@@ -234,10 +234,10 @@ with open(outfile, 'w+', encoding='UTF-8') as f:
 	f.close()
 
 # Show the user the requested access and refresh tokens
-print(success + 'Resource:\n' + reset + json_data['resource'] + '\n')
-print(success + 'Access Token:\n' + reset + json_data['access_token'] + '\n')
-print(success + 'Refresh Token:\n' + reset + json_data['refresh_token'] + '\n')
+print(SUCCESS + 'Resource:\n' + RESET + JSON_DATA['resource'] + '\n')
+print(SUCCESS + 'Access Token:\n' + RESET + JSON_DATA['access_token'] + '\n')
+print(SUCCESS + 'Refresh Token:\n' + RESET + JSON_DATA['refresh_token'] + '\n')
 
 # Calculate the expired time
-expires = json_data['expires_on']
-print(success + 'Expires On:\n' + reset + time.ctime(int(expires)))
+expires = JSON_DATA['expires_on']
+print(SUCCESS + 'Expires On:\n' + RESET + time.ctime(int(expires)))
