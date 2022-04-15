@@ -22,12 +22,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # pip3 install colorama
 
 import os
-import requests
 import sys
 import argparse
-import colorama
 import time
 import json
+import requests
+import colorama
 
 
 # Set up our colors
@@ -53,19 +53,19 @@ resource_choices = [
 ]
 
 DESCRIPTION = '''
-  =====================================================================================
-  # Requests a new access token for a Microsoft/Azure resource using a refresh token. #
-  #                                                                                   #
-  # This script will attempt to load a refresh token from a REFRESH_TOKEN             #
-  # environment variable if none is passed with '-r' or '-R'.                         #
-  =====================================================================================
+	=====================================================================================
+	# Requests a new access token for a Microsoft/Azure resource using a refresh token. #
+	#                                                                                   #
+	# This script will attempt to load a refresh token from a REFRESH_TOKEN             #
+	# environment variable if none is passed with '-r' or '-R'.                         #
+	=====================================================================================
 '''
 
 arg_parser = argparse.ArgumentParser(prog='token_juggle.py',
-		    usage=success + '%(prog)s' + warning + ' <resource> ' + \
- 				reset +'[-r \'refresh_token\' | -R \'./path/to/refresh_token.json\']',
-		    description=DESCRIPTION,
-            formatter_class=argparse.RawDescriptionHelpFormatter)
+				usage=success + '%(prog)s' + warning + ' <resource> ' + \
+				reset +'[-r \'refresh_token\' | -R \'./path/to/refresh_token.json\']',
+				description=DESCRIPTION,
+				formatter_class=argparse.RawDescriptionHelpFormatter)
 arg_parser.add_argument('Resource',
 			metavar='resource',
 			type=str,
@@ -85,7 +85,7 @@ arg_parser.add_argument('-R',
 			dest='refresh_token_file',
 			type=str,
 			help='(string) A JSON file saved from this script ' \
-			 	'containing the refresh token you would like to use.',
+				'containing the refresh token you would like to use.',
 			required=False)
 arg_parser.add_argument('-o',
 			'--outfile',
@@ -108,17 +108,17 @@ if outfile is None:
 # Resources
 
 # Windows Core Management
-WIN_CORE_MANAGEMENT = 'https://management.core.windows.net'	
+WIN_CORE_MANAGEMENT = 'https://management.core.windows.net'
 
 # Azure Management 
 	# (For use in Az [powershell-will not access AzAD cmdlets without also supplying graph token])
-AZURE_MANAGEMENT = 'https://management.azure.com'	
+AZURE_MANAGEMENT = 'https://management.azure.com'
 
 # Graph (For use with Az/AzureAD/AADInternals)
-GRAPH = 'https://graph.windows.net'	
+GRAPH = 'https://graph.windows.net'
 
 # Microsoft Graph (Microsoft is moving towards this from graph in 2022)
-MS_GRAPH = 'https://graph.microsoft.com'	
+MS_GRAPH = 'https://graph.microsoft.com'
 
 # Microsoft Manage
 MS_MANAGE = 'https://enrollment.manage.microsoft.com'
