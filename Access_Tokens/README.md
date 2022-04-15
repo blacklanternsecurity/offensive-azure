@@ -1,4 +1,4 @@
-# token-juggle.py
+# token_juggle.py
 
 Requests a new access token for a Microsoft/Azure resource using a refresh token.
 
@@ -26,19 +26,19 @@ python3 token-juggle.py teams
 ### Using a refresh token as input
 
 ```
-python3 token-juggle.py outlook -r <refresh-token>
+python3 token_juggle.py outlook -r <refresh-token>
 ```
 
 ### Using an already saved token response from this script
 
 ```
-python3 token-juggle.py ms_graph -R <path-to-refresh-token.json>
+python3 token_juggle.py ms_graph -R <path-to-refresh-token.json>
 ```
 
 ## Help
 
 ```
-usage: token-juggle.py <resource> [-r 'refresh_token' | -R './path/to/refresh_token.json']
+usage: token_juggle.py <resource> [-r 'refresh_token' | -R './path/to/refresh_token.json']
 
   =====================================================================================
   # Requests a new access token for a Microsoft/Azure resource using a refresh token. #

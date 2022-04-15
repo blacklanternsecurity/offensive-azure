@@ -7,7 +7,7 @@ Collection of offensive tools targeting Microsoft Azure written in Python to be 
 - [`./Device_Code/device-code-easy-mode.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Device_Code)
   - Generates a code to be entered by the target user
   - Can be used for general token generation or during a phishing/social engineering campaign.
-- [`./Access_Tokens/token-juggle.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Access_Tokens)
+- [`./Access_Tokens/token_juggle.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Access_Tokens)
   - Takes in a refresh token in various ways and retrieves a new refresh token and an access token for the resource specified
 - [`./Outsider_Recon/outsider-recon.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Outsider_Recon)
   - Takes in a domain and enumerates as much information as possible about the tenant without requiring authentication 
