@@ -24,7 +24,7 @@ methods = [
 description = '''
   =====================================================================================
   # This module will enumerate for valid user accounts in an Azure AD environment     #
-  # There are three methods to enumerate with: login, autologon, normal   						#
+  # There are three methods to enumerate with: login, autologon, normal               #
   #                                                                                   #
   # Default method: normal                                                            #
   #                                                                                   #
@@ -32,9 +32,9 @@ description = '''
   # Supplying a password will insert it into either the 'login' or 'autologon' method #
   # If the password is correct, account will be marked 'PWNED'                        #
   #                                                                                   #
-  #%s Using the 'login' method will create failed authentication logs in Azure AD %s  #
+  #%s Using the 'login' method will create failed authentication logs in Azure AD %s      #
   #                                                                                   #
-  #%s Using the 'autologon' method will not create any logs, but is less accurate %s  #
+  #%s Using the 'autologon' method will not create any logs, but is less accurate %s      #
   =====================================================================================
 ''' % (danger, reset, warning, reset)
 
