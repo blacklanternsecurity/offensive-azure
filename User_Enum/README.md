@@ -1,7 +1,7 @@
-# user-enum.py
+# user_enum.py
 
 ```bash
-usage: user-enum.py [-m login-method | -u username | -i input-list | -o outfile]
+usage: user_enum.py [-m login-method | -u username | -i input-list | -o outfile]
 
   =====================================================================================
   # This module will enumerate for valid user accounts in an Azure AD environment     #
