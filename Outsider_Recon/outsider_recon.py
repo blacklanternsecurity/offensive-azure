@@ -313,7 +313,6 @@ class OutsiderRecon:
 
 		return domains
 
-	@classmethod
 	def main(self):
 		"""Runner method"""
 		# Set up our colors
@@ -402,8 +401,8 @@ class OutsiderRecon:
 			login_infos[domain_found] = user_realm_json
 			print(warning + '[+] ' + domain_found + ":" + reset)
 			print(warning + '========================' + reset)
-			for elem in user_realm_json:
-				print((success + elem + reset + ":\t" + str(user_realm_json[elem])).expandtabs(50))
+			for key, value in user_realm_json.items():
+				print((success + key + reset + ":\t" + str(value)).expandtabs(50))
 			print(warning + '========================' + reset + '\n')
 		print()
 
@@ -416,10 +415,10 @@ class OutsiderRecon:
 		# Enumerate Domain Information (DNS, CLOUDMX, CLOUDSPF, DMARC, Identity Management, STS, SSO)
 		print(warning + 'Enumerating Domain Information' + reset + '\n')
 		domain_info = self.enumerate_domain_info(domains_found, login_infos)
-		for domain_name in domain_info:
+		for domain_name, domain_data in domain_info.items():
 			print(warning + '[+] ' + domain_name + ":" + reset)
 			print(warning + '========================' + reset)
-			for key, value in domain_info[domain_name].items():
+			for key, value in domain_data.items():
 				print((success + key + reset + ":\t" + str(value)).expandtabs(24))
 			print(warning + '========================' + reset + '\n')
 
