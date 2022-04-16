@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "offensive-azure"
+name = "offensive_azure"
 version = "0.041"
 description = "Collection of tools for attacking Microsoft Cloud products"
 authors = ["@debifrank14"]
