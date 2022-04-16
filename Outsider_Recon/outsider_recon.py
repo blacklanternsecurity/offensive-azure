@@ -121,7 +121,7 @@ class OutsiderRecon:
 				domain_info[domain]['dmarc'] = False
 				dns_response = dns.resolver.resolve('_dmarc.' + domain, 'TXT')
 				for answer in dns_response:
-					if 'v=DMARC1' in str(answe)r:
+					if 'v=DMARC1' in str(answer):
 						domain_info[domain]['dmarc'] = True
 						break
 			except dns.exception.DNSException as dns_exception:
