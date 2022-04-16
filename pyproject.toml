@@ -1,26 +1,21 @@
 [tool.poetry]
 name = "offensive-azure"
-version = "0.04"
-description = "Collection of modules meant for attacking Azure/Microsoft cloud resources."
+version = "0.041"
+description = "Collection of tools for attacking Microsoft Cloud products"
 authors = ["@debifrank14"]
 license = "GPL-3.0"
-repository = "https://github.com/blacklanternsecurity/offensive-azure"
-homepage = "https://github.com/blacklanternsecurity/offensive-azure"
-
-packages = [
-	{ include="offensive-azure", from="."},
-]
+repository = "https://github.com/blacklanternsecurity.com/offensive-azure"
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 dnspython = "^2.2.1"
 requests = "^2.27.1"
-urllib3 = "^1.26.9"
-idna = "^3.3"
-certifi = "^2021.10.8"
-charset-normalizer = "^2.0.12"
 colorama = "^0.4.4"
 uuid = "^1.30"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

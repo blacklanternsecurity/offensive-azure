@@ -1,1 +1,1 @@
-# Just place holding for now
+__version__ = '0.1.0'
