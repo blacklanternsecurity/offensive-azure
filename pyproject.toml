@@ -7,6 +7,10 @@ license = "GPL-3.0"
 repository = "https://github.com/blacklanternsecurity/offensive-azure"
 homepage = "https://github.com/blacklanternsecurity/offensive-azure"
 
+packages = [
+	{ include="offensive-azure", from="."},
+]
+
 [tool.poetry.dependencies]
 python = "^3.7"
 dnspython = "^2.2.1"
