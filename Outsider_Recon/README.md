@@ -1,4 +1,4 @@
-# outsider-recon.py
+# outsider_recon.py
 
 This module is a port of many different cmdlets from [AADInternals](https://github.com/Gerenios/AADInternals). It only requires a domain to be supplied to run successfully. Enumerated information includes:
 
@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ## Usage
 
 ```bash
-usage: outsider-recon.py <domain> [-o|--outfile <path-to-file>] [-u|--user <user>]
+usage: outsider_recon.py <domain> [-o|--outfile <path-to-file>] [-u|--user <user>]
 
   =====================================================================================
   # This module will enumerate all available information for a given target domain    #
@@ -43,5 +43,5 @@ optional arguments:
 ## Examples
 
 ```bash
-python3 outsider-recon.py domain.com -u user.name -o ./loot
+python3 outsider_recon.py domain.com -u user.name -o ./loot
 ```

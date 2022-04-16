@@ -20,15 +20,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import sys
 import time
 import json
-import dns.resolver
-import dns.rcode
 import xml.etree.ElementTree as ET
 import argparse
+import dns.resolver
+import dns.rcode
 import colorama
 import requests
 
 class OutsiderRecon:
-	'''
+	"""
 	Contains all functions necessary to enumerate an Azure tenant
 	given a domain that belongs to an Azure tenant.
 
@@ -50,10 +50,11 @@ class OutsiderRecon:
 	enumerate_tenant_domains(domain, user_agent='AutodiscoverClient'):
 		Given a domain and optional user_agent, will return all domains
 		registered to the same Azure tenant as the domain provided
-	'''
+	"""
 
 	@staticmethod
-	def enumerate_domain_info(self, domains, login_infos):
+	def enumerate_domain_info(domains, login_infos):
+		"""Takes in list of domains and login information, returns domain details"""
 		domain_info = {}
 		for domain in domains:
 			domain_info[domain] = {}
@@ -63,19 +64,19 @@ class OutsiderRecon:
 			try:
 				if login_infos[domain]['Desktop SSO Enabled'] == 'True':
 					domain_info[domain]['sso'] = True
-			except KeyError as key_error:
+			except KeyError:
 				pass
 
 			# Check for Namespace
 			try:
 				domain_info[domain]['type'] = login_infos[domain]['Namespace Type']
-			except KeyError as key_error:
+			except KeyError:
 				domain_info[domain]['type'] = 'Unknown'
 
 			# Check for STS
 			try:
 				domain_info[domain]['sts'] = login_infos[domain]['Authentication URL']
-			except KeyError as key_error:
+			except KeyError:
 				domain_info[domain]['sts'] = ''
 
 			# Check if DNS Name resolves
@@ -89,7 +90,7 @@ class OutsiderRecon:
 					domain_info[domain]['cloudspf'] = False
 					domain_info[domain]['dmarc'] = False
 					continue
-			except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer) as no_answer:
+			except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
 				domain_info[domain]['dns'] = False
 				domain_info[domain]['cloudmx'] = False
 				domain_info[domain]['cloudspf'] = False
@@ -104,7 +105,7 @@ class OutsiderRecon:
 					if 'mail.protection.outlook.com' in str(answer):
 						domain_info[domain]['cloudmx'] = True
 						break
-			except dns.exception.DNSException as dns_exception:
+			except dns.exception.DNSException:
 				pass
 			# Check for CloudSPF
 			try:
@@ -114,7 +115,7 @@ class OutsiderRecon:
 					if 'include:spf.protection.outlook.com' in str(answer):
 						domain_info[domain]['cloudspf'] = True
 						break
-			except dns.exception.DNSException as dns_exception:
+			except dns.exception.DNSException:
 				pass
 			# Check for DMARC
 			try:
@@ -124,26 +125,26 @@ class OutsiderRecon:
 					if 'v=DMARC1' in str(answer):
 						domain_info[domain]['dmarc'] = True
 						break
-			except dns.exception.DNSException as dns_exception:
+			except dns.exception.DNSException:
 				pass
 
 		return domain_info
 
 	@staticmethod
-	def enumerate_tenant_id(self, openid_config):
-
+	def enumerate_tenant_id(openid_config):
+		"""Given an openid_config, will return the tenant ID"""
 		return openid_config['authorization_endpoint'].split('/')[3]
 
 	@staticmethod
-	def enumerate_login_info(self, domain, username):
-
+	def enumerate_login_info(domain, username):
+		"""Given a domain and optional username, will return the authentication related info"""
 		results = {}
 
 		user = username + '@' + domain
 
-		endpoint1 = 'https://login.microsoftonline.com/common/userrealm/%s?api-version=1.0' % (user)
-		endpoint2 = 'https://login.microsoftonline.com/common/userrealm/%s?api-version=2.0' % (user)
-		endpoint3 = 'https://login.microsoftonline.com/GetUserRealm.srf?login=%s' % (user)
+		endpoint1 = f'https://login.microsoftonline.com/common/userrealm/{user}?api-version=1.0'
+		endpoint2 = f'https://login.microsoftonline.com/common/userrealm/{user}?api-version=2.0'
+		endpoint3 = f'https://login.microsoftonline.com/GetUserRealm.srf?login={user}'
 		endpoint4 = 'https://login.microsoftonline.com/common/GetCredentialType'
 
 		body = {
@@ -170,121 +171,123 @@ class OutsiderRecon:
 
 		try:
 			results['Account Type'] = user_realm_json1['account_type']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Namespace Type'] = user_realm_json2['NameSpaceType']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Domain Name'] = user_realm_json3['DomainName']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Cloud Instance'] = user_realm_json1['cloud_instance_name']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Cloud Instance Audience URN'] = user_realm_json1['cloud_audience_urn']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Federation Brand Name'] = user_realm_json3['FederationBrandName']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['State'] = user_realm_json3['State']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['User State'] = user_realm_json3['UserState']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Exists'] = user_realm_json4['IfExistsResult']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Throttle Status'] = user_realm_json4['ThrottleStatus']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Pref Credential'] = user_realm_json4['Credentials']['PrefCredential']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Has Password'] = user_realm_json4['Credentials']['HasPassword']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Domain Type'] = user_realm_json4['EstsProperties']['DomainType']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Federation Protocol'] = user_realm_json1['federation_protocol']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Federation Metadata URL'] = user_realm_json1['federation_metadata_url']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Federation Active Authentication URL'] = user_realm_json1['federation_active_auth_url']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Authentication URL'] = user_realm_json2['AuthUrl']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Consumer Domain'] = user_realm_json2['ConsumerDomain']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Federation Global Version'] = user_realm_json3['FederationGlobalVersion']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 		try:
 			results['Desktop SSO Enabled'] = user_realm_json4['EstsProperties']['DesktopSsoEnabled']
-		except KeyError as key_error:
+		except KeyError:
 			pass
 
 		return results
 
 	@staticmethod
-	def enumerate_openid(self, domain):
-
-		endpoint = 'https://login.microsoftonline.com/%s/.well-known/openid-configuration' % (domain)
+	def enumerate_openid(domain):
+		"""Given a domain, will return the openid configuration information"""
+		endpoint = f'https://login.microsoftonline.com/{domain}/.well-known/openid-configuration'
 
 		openid_config_json = requests.get(endpoint).json()
 
 		return openid_config_json
 
 	@staticmethod
-	def enumerate_tenant_domains(self, domain, user_agent='AutodiscoverClient'):
+	def enumerate_tenant_domains(domain, user_agent='AutodiscoverClient'):
+		"""Given a domain and optional user_agent, returns domains under shared tenant"""
 		headers = {
 			'Content-Type': 'text/xml; charset=utf-8',
-			'SOAPAction': '"http://schemas.microsoft.com/exchange/2010/Autodiscover/Autodiscover/GetFederationInformation"',
+			'SOAPAction': '"http://schemas.microsoft.com/exchange/2010' \
+				'/Autodiscover/Autodiscover/GetFederationInformation"',
 			'User-Agent': user_agent
 		}
 
-		xml = '''<?xml version="1.0" encoding="utf-8"?>
-		<soap:Envelope xmlns:exm="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:ext="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:a="http://www.w3.org/2005/08/addressing" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-			<soap:Header>
-				<a:Action soap:mustUnderstand="1">http://schemas.microsoft.com/exchange/2010/Autodiscover/Autodiscover/GetFederationInformation</a:Action>
-				<a:To soap:mustUnderstand="1">https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc</a:To>
-				<a:ReplyTo>
-					<a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address>
-				</a:ReplyTo>
-			</soap:Header>
-			<soap:Body>
-				<GetFederationInformationRequestMessage xmlns="http://schemas.microsoft.com/exchange/2010/Autodiscover">
-					<Request>
-						<Domain>%s</Domain>
-					</Request>
-				</GetFederationInformationRequestMessage>
-			</soap:Body>
-		</soap:Envelope>''' % (domain)
+		xml = f'''<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:exm="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:ext="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:a="http://www.w3.org/2005/08/addressing" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<soap:Header>
+		<a:Action soap:mustUnderstand="1">http://schemas.microsoft.com/exchange/2010/Autodiscover/Autodiscover/GetFederationInformation</a:Action>
+		<a:To soap:mustUnderstand="1">https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc</a:To>
+		<a:ReplyTo>
+			<a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address>
+		</a:ReplyTo>
+	</soap:Header>
+	<soap:Body>
+		<GetFederationInformationRequestMessage xmlns="http://schemas.microsoft.com/exchange/2010/Autodiscover">
+			<Request>
+				<Domain>{domain}</Domain>
+			</Request>
+		</GetFederationInformationRequestMessage>
+	</soap:Body>
+</soap:Envelope>'''
 
 		endpoint = 'https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc'
 
@@ -300,7 +303,7 @@ class OutsiderRecon:
 			try:
 				xml_response = ET.fromstring(str(tenant_domains.content, 'utf-8'))
 				proceed = True
-			except ET.ParseError as e:
+			except ET.ParseError:
 				continue
 
 		domains = []
@@ -310,14 +313,15 @@ class OutsiderRecon:
 
 		return domains
 
-	@staticmethod
+	@classmethod
 	def main(self):
+		"""Runner method"""
 		# Set up our colors
 		colorama.init()
-		SUCCESS = colorama.Fore.GREEN
-		DANGER = colorama.Fore.RED
-		WARNING = colorama.Fore.YELLOW
-		RESET = colorama.Style.RESET_ALL
+		success = colorama.Fore.GREEN
+		danger = colorama.Fore.RED
+		warning = colorama.Fore.YELLOW
+		reset = colorama.Style.RESET_ALL
 
 		description = '''
   =====================================================================================
@@ -328,7 +332,7 @@ class OutsiderRecon:
 
 		arg_parser = argparse.ArgumentParser(
 			prog='outsider_recon.py',
-			usage=SUCCESS + '%(prog)s' + WARNING + ' <domain>' + RESET + \
+			usage=success + '%(prog)s' + warning + ' <domain>' + reset + \
 				' [-o|--outfile <path-to-file>] [-u|--user <user>]',
 			description=description,
 			formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -373,50 +377,51 @@ class OutsiderRecon:
 			user = 'none'
 
 		# Enumerating all domains for the tenant the passed in domain belongs to
-		print(WARNING + 'Enumerating Other Domains Within Tenant' + RESET + '\n')
+		print(warning + 'Enumerating Other Domains Within Tenant' + reset + '\n')
 		domains_found = self.enumerate_tenant_domains(args.Domain)
 		if domains_found is None:
-			print(DANGER + 'It doesn\'t look like this is a domain in Azure. Check your domain or try something else.')
+			print(danger + 'It doesn\'t look like this is a domain in Azure.'\
+				' Check your domain or try something else.')
 			sys.exit()
 		for domain_found in domains_found:
-			print(SUCCESS + '[+] ' + RESET + domain_found)
+			print(success + '[+] ' + reset + domain_found)
 		print()
 
 		# Enumerating the openid configuration for the tenant
-		print(WARNING + 'Enumerating OpenID Configuration for Tenant' + RESET + '\n')
+		print(warning + 'Enumerating OpenID Configuration for Tenant' + reset + '\n')
 		openid_config = self.enumerate_openid(args.Domain)
 		for elem in openid_config:
-			print((SUCCESS + elem + RESET + ':\t' + str(openid_config[elem])).expandtabs(50))
+			print((success + elem + reset + ':\t' + str(openid_config[elem])).expandtabs(50))
 		print()
 
 		# Enumerating the login information for each domain discovered
 		login_infos = {}
-		print(WARNING + 'Enumerating User Login Information' + RESET + '\n')
+		print(warning + 'Enumerating User Login Information' + reset + '\n')
 		for domain_found in domains_found:
 			user_realm_json = self.enumerate_login_info(args.Domain, user)
 			login_infos[domain_found] = user_realm_json
-			print(WARNING + '[+] ' + domain_found + ":" + RESET)
-			print(WARNING + '========================' + RESET)
+			print(warning + '[+] ' + domain_found + ":" + reset)
+			print(warning + '========================' + reset)
 			for elem in user_realm_json:
-				print((SUCCESS + elem + RESET + ":\t" + str(user_realm_json[elem])).expandtabs(50))
-			print(WARNING + '========================' + RESET + '\n')
+				print((success + elem + reset + ":\t" + str(user_realm_json[elem])).expandtabs(50))
+			print(warning + '========================' + reset + '\n')
 		print()
 
 		# Enumerate the tenant ID
-		print(WARNING + 'Tenant ID' + RESET + '\n')
+		print(warning + 'Tenant ID' + reset + '\n')
 		tenant_id = self.enumerate_tenant_id(openid_config)
-		print(SUCCESS + '[+] ' + RESET + tenant_id)
+		print(success + '[+] ' + reset + tenant_id)
 		print()
 
 		# Enumerate Domain Information (DNS, CLOUDMX, CLOUDSPF, DMARC, Identity Management, STS, SSO)
-		print(WARNING + 'Enumerating Domain Information' + RESET + '\n')
+		print(warning + 'Enumerating Domain Information' + reset + '\n')
 		domain_info = self.enumerate_domain_info(domains_found, login_infos)
 		for domain_name in domain_info:
-			print(WARNING + '[+] ' + domain_name + ":" + RESET)
-			print(WARNING + '========================' + RESET)
+			print(warning + '[+] ' + domain_name + ":" + reset)
+			print(warning + '========================' + reset)
 			for key, value in domain_info[domain_name].items():
-				print((SUCCESS + key + RESET + ":\t" + str(value)).expandtabs(24))
-			print(WARNING + '========================' + RESET + '\n')
+				print((success + key + reset + ":\t" + str(value)).expandtabs(24))
+			print(warning + '========================' + reset + '\n')
 
 		# Save our results to files
 
@@ -432,7 +437,8 @@ class OutsiderRecon:
 			file.close()
 
 		## Save Domain Login Information
-		with open(path + outfile_prefix + 'domain_login_information.json', 'w+', encoding='UTF-8') as file:
+		with open(path + outfile_prefix + \
+				'domain_login_information.json', 'w+', encoding='UTF-8') as file:
 			file.write(json.dumps(login_infos))
 			file.close()
 
@@ -446,7 +452,7 @@ class OutsiderRecon:
 			file.write(json.dumps(domain_info))
 			file.close()
 
-		print(SUCCESS + '[+] Files Saved Successfully!' + RESET)
+		print(success + '[+] Files Saved Successfully!' + reset)
 
 if __name__ == '__main__':
 	prog = OutsiderRecon()
