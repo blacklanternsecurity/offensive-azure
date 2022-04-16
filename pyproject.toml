@@ -7,6 +7,9 @@ license = "GPL-3.0"
 repository = "https://github.com/blacklanternsecurity.com/offensive-azure"
 readme = "README.md"
 
+[tool.poetry.scripts]
+token_juggle = 'offensive_azure.Access_Tokens.token_juggle:main'
+
 [tool.poetry.dependencies]
 python = "^3.8"
 dnspython = "^2.2.1"
