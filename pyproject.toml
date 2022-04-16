@@ -2,7 +2,7 @@
 name = "offensive_azure"
 version = "0.041"
 description = "Collection of tools for attacking Microsoft Cloud products"
-authors = ["@debifrank14"]
+authors = ["Cody Martin <@debifrank14>"]
 license = "GPL-3.0"
 repository = "https://github.com/blacklanternsecurity.com/offensive-azure"
 readme = "README.md"
