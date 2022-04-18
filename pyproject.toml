@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "offensive_azure"
-version = "0.044"
+version = "0.045"
 description = "Collection of tools for attacking Microsoft Cloud products"
 authors = ["Cody Martin <debifrank00@gmail.com>"]
 license = "GPL-3.0"
