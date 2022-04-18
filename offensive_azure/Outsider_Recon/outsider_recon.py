@@ -374,6 +374,8 @@ class OutsiderRecon:
 		user = args.user
 		if user is None:
 			user = 'none'
+		else:
+			user = user.split('@')[0]
 
 		# Enumerating all domains for the tenant the passed in domain belongs to
 		print(warning + 'Enumerating Other Domains Within Tenant' + reset + '\n')
@@ -453,6 +455,12 @@ class OutsiderRecon:
 
 		print(success + '[+] Files Saved Successfully!' + reset)
 
-if __name__ == '__main__':
+def runner():
+	"""Runner function"""
 	prog = OutsiderRecon()
 	prog.main()
+	sys.exit()
+
+if __name__ == '__main__':
+	runner()
+	sys.exit()

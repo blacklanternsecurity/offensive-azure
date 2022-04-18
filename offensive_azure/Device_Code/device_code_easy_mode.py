@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
+import sys
 import json
 import time
 import requests
@@ -60,57 +61,64 @@ SUBSTRATE = 'https://substrate.office.com'
 # but if you just know what you want you can set it here:
 RESOURCE = GRAPH
 
-post_data = {"resource": RESOURCE, "client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c"}
-start_time = time.time()
+def main():
+	"""Main runner function of the module. Handles the entire request-response transaction"""
+	post_data = {"resource": RESOURCE, "client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c"}
+	start_time = time.time()
 
-r = requests.post(GET_DEVICE_CODE_ENDPOINT, data=post_data)
+	request = requests.post(GET_DEVICE_CODE_ENDPOINT, data=post_data)
 
-response_json = json.loads(r.text)
+	response_json = json.loads(request.text)
 
-device_code = response_json['device_code']
+	device_code = response_json['device_code']
 
-expires_in = response_json['expires_in']
+	expires_in = response_json['expires_in']
 
-print("\nMessage: " + response_json['message'] + '\n')
+	print("\nMessage: " + response_json['message'] + '\n')
 
-POLLING_ENDPOINT = 'https://login.microsoftonline.com/Common/oauth2/token?api-version=1.0'
+	polling_endpoint = 'https://login.microsoftonline.com/Common/oauth2/token?api-version=1.0'
 
-poll_data = {
-	"client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c",
-	"resource": RESOURCE,
-	"code": device_code,
-	"grant_type": "urn:ietf:params:oauth:grant-type:device_code"
-}
+	poll_data = {
+		"client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c",
+		"resource": RESOURCE,
+		"code": device_code,
+		"grant_type": "urn:ietf:params:oauth:grant-type:device_code"
+	}
 
-DOTS = ""
+	dots = ""
 
-UNFINISHED = True
+	unfinished = True
 
-while UNFINISHED:
-	current_time = time.time()
-	poll = requests.post(POLLING_ENDPOINT, data=poll_data)
-	status_code = poll.status_code
-	poll_json = json.loads(poll.text)
-	if status_code == 200:
-		print()
-		print("Token Type: " + poll_json['token_type'])
-		print("Scope: " + poll_json['scope'])
-		print("Expires In: " + poll_json['expires_in'])
-		print("Expires On: " + poll_json['expires_on'])
-		print("Not Before: " + poll_json['not_before'])
-		print("Resource: " + poll_json['resource'])
-		print("Acess Token:\n" + poll_json['access_token'])
-		print("Refresh Token:\n" + poll_json['refresh_token'])
-		print("ID Token:\n" + poll_json['id_token'])
-		UNFINISHED = False
-	else:
-		print(poll_json['error'] + DOTS + '   ', end='\r')
-		if DOTS == "...":
-			DOTS = ""
-		else:
-			DOTS = DOTS + "."
-		if (int(current_time) - int(start_time)) > int(expires_in):
+	while unfinished:
+		current_time = time.time()
+		poll = requests.post(polling_endpoint, data=poll_data)
+		status_code = poll.status_code
+		poll_json = json.loads(poll.text)
+		if status_code == 200:
 			print()
-			print("Device Code Expired :(")
-			UNFINISHED = False
-		time.sleep(5)
+			print("Token Type: " + poll_json['token_type'])
+			print("Scope: " + poll_json['scope'])
+			print("Expires In: " + poll_json['expires_in'])
+			print("Expires On: " + poll_json['expires_on'])
+			print("Not Before: " + poll_json['not_before'])
+			print("Resource: " + poll_json['resource'])
+			print("Acess Token:\n" + poll_json['access_token'])
+			print("Refresh Token:\n" + poll_json['refresh_token'])
+			print("ID Token:\n" + poll_json['id_token'])
+			unfinished = False
+		else:
+			print(poll_json['error'] + dots + '   ', end='\r')
+			if dots == "...":
+				dots = ""
+			else:
+				dots = dots + "."
+			if (int(current_time) - int(start_time)) > int(expires_in):
+				print()
+				print("Device Code Expired :(")
+				unfinished = False
+			time.sleep(5)
+	sys.exit()
+
+if __name__ == '__main__':
+	main()
+	sys.exit()

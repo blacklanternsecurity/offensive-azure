@@ -9,6 +9,9 @@ readme = "README.md"
 
 [tool.poetry.scripts]
 token_juggle = 'offensive_azure.Access_Tokens.token_juggle:main'
+device_code_easy_mode = 'offensive_azure.Device_Code.device_code_easy_mode:main'
+outsider_recon = 'offensive_azure.Outsider_Recon.outsider_recon:runner'
+user_enum = 'offensive_azure.User_Enum.user_enum:main'
 
 [tool.poetry.dependencies]
 python = "^3.8"
