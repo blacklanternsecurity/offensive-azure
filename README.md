@@ -14,3 +14,47 @@ Collection of offensive tools targeting Microsoft Azure written in Python to be 
 - [`./User_Enum/user_enum.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/User_Enum)
   - Takes in a username or list of usernames and attempts to enumerate valid accounts using one of three methods
   - Can also be used to perform a password spray
+
+# Installation
+
+Offensive Azure can be installed in a number of ways or not at all. 
+
+You are welcome to clone the repository and execute the specific scripts you want. A `requirements.txt` file is included for each module to make this as easy as possible.
+
+## Poetry
+
+The project is built to work with `poetry`. To use, follow the next few steps:
+
+```
+git clone https://github.com/blacklanternsecurity/offensive-azure.git
+cd ./offensive-azure
+poetry install
+```
+
+## Pip
+
+The packaged version of the repo is also kept on pypi so you can use `pip` to install as well. We recommend you use `pipenv` to keep your environment as clean as possible.
+
+```
+pipenv shell
+pip install offensive_azure
+```
+
+# Usage
+
+It is up to you for how you wish to use this toolkit. Each module can be ran independently, or you can install it as a package and use it in that way. Each module is exported to a script named the same as the module file. For example:
+
+## Poetry
+
+```
+poetry install
+poetry run outsider_recon your-domain.com
+```
+
+## Pip
+
+```
+pipenv shell
+pip install offensive_azure
+outsider_recon your-domain.com
+```
