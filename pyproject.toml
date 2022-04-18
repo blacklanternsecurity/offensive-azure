@@ -19,6 +19,7 @@ dnspython = "^2.2.1"
 requests = "^2.27.1"
 colorama = "^0.4.4"
 uuid = "^1.30"
+python-whois = "^0.7.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

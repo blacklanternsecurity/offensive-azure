@@ -26,6 +26,7 @@ import dns.resolver
 import dns.rcode
 import colorama
 import requests
+import whois
 
 class OutsiderRecon:
 	"""
@@ -78,6 +79,14 @@ class OutsiderRecon:
 				domain_info[domain]['sts'] = login_infos[domain]['Authentication URL']
 			except KeyError:
 				domain_info[domain]['sts'] = ''
+
+			# Check for WHOIS
+			domain_info[domain]['whois'] = False
+			try:
+				whois_response = whois.whois(domain)
+				domain_info[domain]['whois'] = bool(whois_response.domain_name)
+			except whois.parser.PywhoisError:
+				pass
 
 			# Check if DNS Name resolves
 			try:
