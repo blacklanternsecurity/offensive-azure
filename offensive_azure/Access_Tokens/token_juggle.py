@@ -217,10 +217,43 @@ def main():
 
 	data = {
 		'client_id': CLIENT_ID,
-		'grant_type': 'refresh_token',
-		'scope': "openid",
 		'resource': resource,
-		'refresh_token': refresh_token
+		'grant_type': 'refresh_token',
+		'refresh_token': refresh_token,
+		'scope': 'openid',
+		'optionalClaims': {
+			'accessToken': [
+				{'name': 'acct'}, # User account status (tenant member = 0; guest = 1)
+				{'name': 'auth_time'}, # Time when the user last authenticated
+				{'name': 'ctry'}, # Users country/region
+				{'name': 'email'}, # Reported user email address
+				{'name': 'fwd'}, # Original IPv4 Address of requesting client (when inside VNET)
+				{'name': 'groups'}, # GroupMembership
+				{'name': 'idtyp'}, # App for app-only token, or app+user
+				{'name': 'login_hint'}, # Login hint
+				{'name': 'sid'}, # Session ID
+				{'name': 'tenant_ctry'}, # Tenant Country
+				{'name': 'tenant_region_scope'}, # Tenant Region
+				{'name': 'upn'}, # UserPrincipalName
+				{'name': 'verified_primary_email'}, # User's PrimaryAuthoritativeEmail
+				{'name': 'verified_secondary_email'}, # User's SecondaryAuthoritativeEmail
+				{'name': 'vnet'}, # VNET specifier
+				{'name': 'xms_pdl'}, # Preferred data location
+				{'name': 'xms_pl'}, # User's preferred language
+				{'name': 'xms_tpl'}, # Target Tenants preferred language
+				{'name': 'ztdid'}, # Device Identity used for Windows AutoPilot
+				{'name': 'ipaddr'}, # IP Address the client logged in from
+				{'name': 'onprem_sid'}, # On-Prem Security Identifier
+				{'name': 'pwd_exp'}, # Password Expiration Time (datetime)
+				{'name': 'pwd_url'}, # Change password URL
+				{'name': 'in_corp'}, # If client logs in within the corporate network (based off "trusted IPs")
+				{'name': 'family_name'}, # Last Name
+				{'name': 'given_name'}, # First Name
+				{'name': 'upn'}, # User Principal Name
+				{'name': 'aud'}, # Audience/Resource the token is for
+				{'name': 'preferred_username'}, # Preferred username
+			]
+		}
 	}
 
 	# Sending the request
@@ -242,7 +275,7 @@ def main():
 		file.close()
 
 	# Show the user the requested access and refresh tokens
-	print(SUCCESS + 'Resource:\n' + RESET + json_data['resource'] + '\n')
+	print(SUCCESS + 'Scope:\n' + RESET + json_data['scope'] + '\n')
 	print(SUCCESS + 'Access Token:\n' + RESET + json_data['access_token'] + '\n')
 	print(SUCCESS + 'Refresh Token:\n' + RESET + json_data['refresh_token'] + '\n')
 

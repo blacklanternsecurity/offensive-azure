@@ -59,11 +59,49 @@ SUBSTRATE = 'https://substrate.office.com'
 # Set RESOURCE to one of the above resources you want to target
 # You can always use a refresh token to request one of these later,
 # but if you just know what you want you can set it here:
-RESOURCE = GRAPH
+RESOURCE = OUTLOOK
 
 def main():
 	"""Main runner function of the module. Handles the entire request-response transaction"""
-	post_data = {"resource": RESOURCE, "client_id": "d3590ed6-52b3-4102-aeff-aad2292ab01c"}
+	post_data = {
+		'resource': RESOURCE,
+		'client_id': 'd3590ed6-52b3-4102-aeff-aad2292ab01c',
+		'scope': 'openid',
+		'optionalClaims': {
+			'accessToken': [
+				{'name': 'acct'}, # User account status (tenant member = 0; guest = 1)
+				{'name': 'auth_time'}, # Time when the user last authenticated
+				{'name': 'ctry'}, # Users country/region
+				{'name': 'email'}, # Reported user email address
+				{'name': 'fwd'}, # Original IPv4 Address of requesting client (when inside VNET)
+				{'name': 'groups'}, # GroupMembership
+				{'name': 'idtyp'}, # App for app-only token, or app+user
+				{'name': 'login_hint'}, # Login hint
+				{'name': 'sid'}, # Session ID
+				{'name': 'tenant_ctry'}, # Tenant Country
+				{'name': 'tenant_region_scope'}, # Tenant Region
+				{'name': 'upn'}, # UserPrincipalName
+				{'name': 'verified_primary_email'}, # User's PrimaryAuthoritativeEmail
+				{'name': 'verified_secondary_email'}, # User's SecondaryAuthoritativeEmail
+				{'name': 'vnet'}, # VNET specifier
+				{'name': 'xms_pdl'}, # Preferred data location
+				{'name': 'xms_pl'}, # User's preferred language
+				{'name': 'xms_tpl'}, # Target Tenants preferred language
+				{'name': 'ztdid'}, # Device Identity used for Windows AutoPilot
+				{'name': 'ipaddr'}, # IP Address the client logged in from
+				{'name': 'onprem_sid'}, # On-Prem Security Identifier
+				{'name': 'pwd_exp'}, # Password Expiration Time (datetime)
+				{'name': 'pwd_url'}, # Change password URL
+				{'name': 'in_corp'}, # If client logs in within the corporate network (based off "trusted IPs")
+				{'name': 'family_name'}, # Last Name
+				{'name': 'given_name'}, # First Name
+				{'name': 'upn'}, # User Principal Name
+				{'name': 'aud'}, # Audience/Resource the token is for
+				{'name': 'preferred_username'},
+				{'name': 'scope'} # Preferred username
+			]
+		}
+	}
 	start_time = time.time()
 
 	request = requests.post(GET_DEVICE_CODE_ENDPOINT, data=post_data)
