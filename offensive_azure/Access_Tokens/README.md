@@ -1,4 +1,6 @@
-# token_juggle.py
+# Access_Tokens
+
+## token_juggle.py
 
 Requests a new access token for a Microsoft/Azure resource using a refresh token.
 
@@ -8,6 +10,10 @@ This script will attempt to load a refresh token from a REFRESH_TOKEN environmen
 
 After a successful refresh to a new access+refresh token pair, the response output will be saved to where you specify with `-o|--outfile`. If you do not specify an outfile, then it will be saved to `./YYYY-MM-DD_HH-MM-SS_<resource>_token.json`. These can be passed back to the script for further use.
 
+## read_token.py
+
+Reads an access token, parsing the various claims contained within it. Also attempts to validate the signature and tests for token expiration.
+
 ## Requirements
 
 ```
@@ -16,28 +22,30 @@ pip3 install -r requirements.txt
 
 ## Usage
 
-### Using environment variable
+### token_juggle.py
+
+#### Using environment variable
 
 ```
 export REFRESH_TOKEN=<refresh-token>
 python3 token-juggle.py teams
 ```
 
-### Using a refresh token as input
+#### Using a refresh token as input
 
 ```
 python3 token_juggle.py outlook -r <refresh-token>
 ```
 
-### Using an already saved token response from this script
+#### Using an already saved token response from this script
 
 ```
 python3 token_juggle.py ms_graph -R <path-to-refresh-token.json>
 ```
 
-## Help
+#### Help
 
-```
+```bash
 usage: token_juggle.py <resource> [-r 'refresh_token' | -R './path/to/refresh_token.json']
 
   =====================================================================================
@@ -62,4 +70,23 @@ optional arguments:
   -o <filename>, --outfile <filename>
                         (string) The path/filename of where you want the new token data (json object) saved. If not
                         supplied, script defaults to "./YYYY-MM-DD_HH-MM-SS_<resource>_token.json"
+```
+
+### read_token.py
+
+#### Help
+
+```bash
+usage: read_token.py [-t|--token <access_token>]
+
+        ==========================================================
+        #                                                        #
+        #  Reads an access token for a Microsoft/Azure resource  #
+        #                                                        #
+        ==========================================================
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t <access_token>, --token <access_token>
+                        The token you would like to read
 ```

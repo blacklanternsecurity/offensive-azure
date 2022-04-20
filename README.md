@@ -9,6 +9,8 @@ Collection of offensive tools targeting Microsoft Azure written in Python to be 
   - Can be used for general token generation or during a phishing/social engineering campaign.
 - [`./Access_Tokens/token_juggle.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Access_Tokens)
   - Takes in a refresh token in various ways and retrieves a new refresh token and an access token for the resource specified
+- [`./Access_Tokens/read_token.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Access_Tokens)
+  - Takes in an access token and parses the included claims information, checks for expiration, attempts to validate signature
 - [`./Outsider_Recon/outsider_recon.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Outsider_Recon)
   - Takes in a domain and enumerates as much information as possible about the tenant without requiring authentication 
 - [`./User_Enum/user_enum.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/User_Enum)

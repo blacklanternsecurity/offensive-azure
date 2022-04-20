@@ -23,10 +23,10 @@ import json
 import datetime
 import argparse
 import colorama
-#from Crypto.PublicKey import RSA
-#from Crypto.Signature import PKCS1_PSS
-#from Crypto.Hash import SHA
-#import requests
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_PSS
+from Crypto.Hash import SHA
+import requests
 
 DESCRIPTION = '''
 	==========================================================
@@ -67,9 +67,9 @@ def main():
 
 	parts = args.access_token.split('.')
 
-	#head = parts[0]
+	head = parts[0]
 	payload = parts[1]
-	#signature = parts[2]
+	signature = parts[2]
 
 	# Parsing access token information
 	payload_string = base64.b64decode(payload + '==')
@@ -339,6 +339,83 @@ def main():
 	current_time = datetime.datetime.now().timestamp()
 	result['Expired'] = current_time > exp
 
+	# Token signature verfication
+
+	head_string = base64.b64decode(head + '==')
+	head_json = json.loads(head_string)
+	key_id = head_json['kid']
+
+	if head_json['alg'] == 'RS256':
+		response = requests.get(KEY_ENDPOINT).json()
+		public_cert = None
+		for key in response['keys']:
+			if key['kid'] == key_id:
+				public_cert = key['x5c']
+				break
+		if public_cert is not None:
+			public_cert_bin = base64.b64decode(public_cert[0])
+			jwt_data = f'{head}.{payload}'
+			jwt_data_bin = base64.b64decode(jwt_data + '==')
+			signature = signature.replace('-','+').replace('_','/') + '=='
+			signature_bin = base64.b64decode(signature)
+			for index in range(0, len(public_cert_bin), 1):
+				byte = public_cert_bin[index]
+				next_byte = public_cert_bin[index+1]
+				if byte == 0x02 and next_byte & 0x80:
+					index = index + 1
+					if next_byte & 0x02:
+						byte_one = str(public_cert_bin[index+2])
+						while len(byte_one) % 8:
+							byte_one = '0' + byte_one
+						byte_two = str(public_cert_bin[index+1])
+						while len(byte_two) % 8:
+							byte_two = '0' + byte_two
+						bytes_concat = byte_one + byte_two
+						byte_count = int(bytes_concat, 2)
+						index = index + 3
+					elif next_byte & 0x01:
+						byte_one = str(public_cert_bin[index+1])
+						while len(byte_one) % 8:
+							byte_one = '0' + byte_one
+						byte_count = int(byte_one, 2)
+						index = index + 2
+
+					if public_cert_bin[index] == 0x00:
+						index = index + 1
+						byte_count = byte_count - 1
+
+					modulus = public_cert_bin[index:index+byte_count]
+
+					index = index + byte_count
+					if public_cert_bin[index] == 0x02:
+						index = index + 1
+						byte_count = public_cert_bin[index]
+						exponent = public_cert_bin[index:index+byte_count-1]
+					else:
+						result['Valid_Signature'] = 'Error'
+						break
+			if exponent and modulus:
+				exponent_bin = ''
+				for exp_byte in exponent:
+					exp_bin = str(bin(exp_byte)).replace('0b', '')
+					while len(exp_bin) % 8:
+						exp_bin = '0' + exp_bin
+					exponent_bin = exponent_bin + exp_bin
+				modulus_bin = ''
+				for mod_byte in modulus:
+					mod_bin = str(bin(mod_byte)).replace('0b', '')
+					while len(mod_bin) % 8:
+						mod_bin = '0' + mod_bin
+					modulus_bin = modulus_bin + mod_bin
+				rsa = RSA.construct((int(modulus_bin, 2), int(exponent_bin, 2)))
+				hash_msg = SHA.new()
+				hash_msg.update(jwt_data_bin)
+				verifier = PKCS1_PSS.new(rsa.publickey())
+				valid = verifier.verify(hash_msg, signature_bin) # pylint: disable=not-callable
+				result['Valid_Signature'] = valid
+	else:
+		result['Valid_Signature'] = 'Unsupported Algorithm'
+
 	print()
 	print(f'{WARNING}TOKEN INFORMATION{RESET}:')
 	for key, value in result.items():
@@ -346,70 +423,15 @@ def main():
 			print(f'{SUCCESS}{key}{RESET}: {DANGER}{value}{RESET}')
 		elif key == 'Expired' and value is False:
 			print(f'{SUCCESS}{key}{RESET}: {VALID}{value}{RESET}')
+		elif key == 'Valid_Signature' and value is True:
+			print(f'{SUCCESS}{key}{RESET}: {VALID}{value}{RESET}')
+		elif key == 'Valid_Signature' and value is False:
+			print(f'{SUCCESS}{key}{RESET}: {WARNING}Unable To Validate{RESET}')
 		elif value != '':
 			print(f'{SUCCESS}{key}{RESET}: {value}')
 		else:
 			continue
 
-# WORK IN PROGRESS
-# ================
-#	# Token signature verfication
-#
-#	head_string = base64.b64decode(head + '==')
-#	head_json = json.loads(head_string)
-#	key_id = head_json['kid']
-#
-#	if head_json['alg'] == 'RS256':
-#		response = requests.get(KEY_ENDPOINT).json()
-#		public_cert = None
-#		for key in response['keys']:
-#			if key['kid'] == key_id:
-#				public_cert = key['x5c']
-#				break
-#		if public_cert is not None:
-#			public_cert_binary = bytearray(base64.b64decode(public_cert[0]))
-#			print(public_cert_binary)
-#			jwt_data = f'{head}.{payload}'
-#			jwt_data_binary = base64.b64decode(jwt_data)
-#			signature = signature.replace('-','+').replace('_','/') + '=='
-#			signature_binary = base64.decodebytes(signature.encode())
-#			for index in range(0, len(public_cert_binary), 1):
-#				byte = public_cert_binary[index]
-#				next_byte = public_cert_binary[index+1]
-#				print(byte)
-#				print(next_byte)
-#				sys.exit()
-#				if byte == b'\x02'.encode() and next_byte & b'\x80'.encode():
-#					index = index + 1
-#					if next_byte & b'\x02':
-#						byte_count = int16(public_cert_binary[index+2:index+1])
-#						index = index + 3
-#					elif next_byte & b'\x01':
-#						byte_count = public_cert_binary[index+1]
-#						index = index + 2
-#					if public_cert_binary[index] == b'\x00':
-#						index = index + 1
-#						byte_count = byte_count - 1
-#
-#					modulus = public_cert_binary[index:index+byte_count-1]
-#
-#					index = index + byte_count
-#					if public_cert_binary[index+1] == b'\x02':
-#						index = index + 1
-#						byte_count = public_cert_binary[index]
-#						exponent = public_cert_binary[index:index+byte_count-1]
-#						break
-#					else:
-#						result['Valid'] = 'Error'
-#			if exponent and modulus:
-#				rsa = RSA.construct((int(modulus), int(exponent)))
-#				hash_msg = SHA.new()
-#				hash_msg.update(jwt_data_binary)
-#				verifier = PKCS1_PSS.new(rsa.publickey())
-#				valid = verifier.verify(hash_msg, signature_binary)
-#				result['Valid'] = valid
-#	else:
-#		result['Valid'] = 'Unsupported Algorithm'
 
 if __name__ == '__main__':
 	main()

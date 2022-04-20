@@ -275,6 +275,7 @@ def main():
 		file.close()
 
 	# Show the user the requested access and refresh tokens
+	print(SUCCESS + 'Resource:\n' + RESET + json_data['resource'] + '\n')
 	print(SUCCESS + 'Scope:\n' + RESET + json_data['scope'] + '\n')
 	print(SUCCESS + 'Access Token:\n' + RESET + json_data['access_token'] + '\n')
 	print(SUCCESS + 'Refresh Token:\n' + RESET + json_data['refresh_token'] + '\n')
