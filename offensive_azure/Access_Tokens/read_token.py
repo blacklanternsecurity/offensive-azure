@@ -359,8 +359,12 @@ def main():
 			signature = signature.replace('-','+').replace('_','/') + '=='
 			signature_bin = base64.b64decode(signature)
 			for index in range(0, len(public_cert_bin), 1):
-				byte = public_cert_bin[index]
-				next_byte = public_cert_bin[index+1]
+				try:
+					byte = public_cert_bin[index]
+					next_byte = public_cert_bin[index+1]
+				except IndexError:
+					result['Valid_Signature'] = 'Error'
+					break
 				if byte == 0x02 and next_byte & 0x80:
 					index = index + 1
 					if next_byte & 0x02:
