@@ -2,6 +2,8 @@
   <img src="https://user-images.githubusercontent.com/28767257/160513484-cb70370c-9fce-48d1-84ec-8b9ea3cf8e5a.png">
 </p>
 
+[![Python Version](https://img.shields.io/pypi/pyversions/offensive_azure?style=plastic)](https://www.python.org) [![Build Status](https://img.shields.io/github/workflow/status/blacklanternsecurity/offensive-azure/Pylint?style=plastic)](https://github.com/blacklanternsecurity/offensive-azure/actions/workflows/pylint.yml?query=workflow%3Apylint)
+
 Collection of offensive tools targeting Microsoft Azure written in Python to be platform agnostic. The current list of tools can be found below with a brief description of their functionality.
 
 - [`./Device_Code/device_code_easy_mode.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Device_Code)
