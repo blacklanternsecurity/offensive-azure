@@ -19,15 +19,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
 import sys
+import time
 import base64
-import pprint
 import json
-import datetime
 import argparse
 import colorama
-from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_PSS
-from Crypto.Hash import SHA
 import requests
 
 DESCRIPTION = '''
@@ -148,12 +144,11 @@ SELECT_PARAMS_DICT = {
 	'usageLocation': 'User_Usage_Location', # country code to help with legal requirements
 	'userPrincipalName': 'User_Principal_Name', # UPN - maps to email
 	'isResourceAccount': 'Is_Resource_Account' # Not currently used, reserved for future use
-	
 }
 
 SELECT_PARAMS = []
-for key in SELECT_PARAMS_DICT:
-	SELECT_PARAMS.append(key)
+for param_key in SELECT_PARAMS_DICT:
+	SELECT_PARAMS.append(param_key)
 
 SELECT_PARAMS_STRING = str(SELECT_PARAMS)[1:][:-1].replace('\'','').replace(' ', '')
 
@@ -177,6 +172,7 @@ def transpose_user(user):
 				return_user[readable] = str(user[prop])
 		except KeyError:
 			pass
+
 	return return_user
 
 def main():
@@ -225,6 +221,16 @@ def main():
 
 
 	args = arg_parser.parse_args()
+
+	# Handle outfile path
+	outfile_path_base = args.outfile_path
+	if outfile_path_base is None:
+		outfile_path_base = time.strftime('%Y-%m-%d_%H-%M-%S_')
+	elif outfile_path_base[-1] != '/':
+		outfile_path_base = outfile_path_base + '/' + time.strftime('%Y-%m-%d_%H-%M-%S_')
+	outfile_raw_json = outfile_path_base + 'users_raw.json'
+	outfile_condensed = outfile_path_base + 'users_condensed.json'
+	outfile_bloodhound = outfile_path_base + 'users_bloodhound.json'
 
 	# Check to see if any graph or refresh token is given in the arguments
 	# If both are given, will use graph token
@@ -282,23 +288,12 @@ def main():
 			sys.exit()
 		graph_token = json_data['access_token']
 
-	# Graph the domain from the graph token claims
-	claims = json.loads(base64.b64decode(graph_token.split('.')[1] + '=='))
-	domain = ''
-	try:
-		domain = claims['unique_name'].split('@')[1]
-	except KeyError:
-		try:
-			domain = claims['upn'].split('@')[1]
-		except KeyError:
-			print(f'{DANGER}Unable to determine domain from graph token{RESET}')
-			sys.exit()
-
 	headers = {
 		'Authorization': 'Bearer ' + graph_token
 	}
 
 	response = requests.get(ENDPOINT, headers=headers).json()
+	raw_json_data = {'value': []}
 	users_result = {}
 	try:
 		response_users = response['value']
@@ -306,6 +301,7 @@ def main():
 		print(f'{DANGER}Error retrieving users{RESET}')
 		sys.exit()
 	for user in response_users:
+		raw_json_data['value'].append(user)
 		users_result[user['id']] = transpose_user(user)
 
 	try:
@@ -317,24 +313,76 @@ def main():
 		response = requests.get(next_link, headers=headers).json()
 		response_users = response['value']
 		for user in response_users:
+			raw_json_data['value'].append(user)
 			users_result[user['id']] = transpose_user(user)
 		try:
 			next_link = response['@odata.nextLink']
 		except KeyError:
 			next_link = None
 
+	condensed_json_data = {'users': {}}
 	for object_id, values in users_result.items():
+		condensed_json_data['users'][object_id] = {}
 		for key, value in values.items():
-			if key == 'Assigned_Plans' or key == 'User_Provisioned_Plans' or \
-				key == 'Current_License_States' or key == 'Assigned_Licenses':
+			if key in ('Assigned_Plans', 'User_Provisioned_Plans',\
+				'Current_License_States', 'Assigned_Licenses'):
 				continue
+			if key == 'Custom_Exchange_Attributes_On-Prem':
+				include_exchange_attr = False
+				json_values = json.loads(value.replace('\'', '\"').replace('None', 'null'))
+				for exchange_value in json_values.values():
+					if exchange_value is not None:
+						include_exchange_attr = True
+						break
+				if include_exchange_attr:
+					condensed_json_data['users'][object_id][key] = value
+					print(f'{SUCCESS}{key}{RESET}:\t{value}'.expandtabs(56))
 			elif value != 'None':
-				print(f'{SUCCESS}{key}{RESET}:{value}')
+				condensed_json_data['users'][object_id][key] = value
+				print(f'{SUCCESS}{key}{RESET}:\t{value}'.expandtabs(56))
 		print()
-	# TODO
-	# Add in save raw json to file
+
+	# Save raw json to file
+	print(f'{SUCCESS}[+]{RESET} Writing raw response data to {WARNING}{outfile_raw_json}{RESET}')
+	with open(outfile_raw_json, 'w+', encoding='UTF-8') as raw_json_out:
+		json.dump(raw_json_data, raw_json_out, indent = 4)
+
 	# save condensed output to file
+	print(f'{SUCCESS}[+]{RESET} Writing condensed response ' + \
+		f'data to {WARNING}{outfile_condensed}{RESET}')
+	with open(outfile_condensed, 'w+', encoding='UTF-8') as condensed_json_out:
+		json.dump(condensed_json_data, condensed_json_out, indent = 4)
+
 	# save bloodhound-users.json
+	print(f'{SUCCESS}[+]{RESET} Writing bloodhound data to {WARNING}{outfile_bloodhound}{RESET}')
+	user_count = len(raw_json_data['value'])
+	parts = graph_token.split('.')
+	payload = parts[1]
+	payload_string = base64.b64decode(payload + '==')
+	payload_json = json.loads(payload_string)
+	token_tenant_id  = payload_json['tid']
+	bloodhound_json_data = {
+		'meta': {
+			'count': user_count,
+			'type': 'azusers',
+			'version': 4
+		},
+		'data': []
+	}
+	for user in raw_json_data['value']:
+		if '#EXT#' not in user['userPrincipalName']:
+			tenant_id = token_tenant_id
+		else:
+			tenant_id = None
+		bloodhound_json_data['data'].append({
+			'DisplayName': user['userPrincipalName'].split('@')[0],
+			'UserPrincipalName': user['userPrincipalName'],
+			'OnPremisesSecurityIdentifier': user['onPremisesSecurityIdentifier'],
+			'ObjectID': user['id'],
+			'TenantID': tenant_id
+		})
+	with open(outfile_bloodhound, 'w+', encoding='UTF-8') as bloodhound_json_out:
+		json.dump(bloodhound_json_data, bloodhound_json_out, indent = 4)
 
 if __name__ == '__main__':
 	main()

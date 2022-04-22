@@ -16,6 +16,12 @@ Collection of offensive tools targeting Microsoft Azure written in Python to be 
 - [`./User_Enum/user_enum.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/User_Enum)
   - Takes in a username or list of usernames and attempts to enumerate valid accounts using one of three methods
   - Can also be used to perform a password spray
+- [`./Azure_AD/get_tenant.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
+  - Takes in an access token or refresh token, outputs tenant ID and tenant Name
+  - Creates text output file as well as BloodHound compatible aztenant file
+- [`./Azure_AD/get_users.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
+  - Takes in an access token or refresh token, outputs all users in Azure AD and all available user properties in Microsoft Graph
+  - Creates three data files, a condensed json file, a raw json file, and a BloodHound compatible azusers file
 
 # Installation
 
