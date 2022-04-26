@@ -22,6 +22,9 @@ Collection of offensive tools targeting Microsoft Azure written in Python to be 
 - [`./Azure_AD/get_users.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
   - Takes in an access token or refresh token, outputs all users in Azure AD and all available user properties in Microsoft Graph
   - Creates three data files, a condensed json file, a raw json file, and a BloodHound compatible azusers file
+- [`./Azure_AD/get_groups.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
+  - Takes in an access token or refresh token, outputs all groups in Azure AD and all available group properties in Microsoft Graph
+  - Creates three data files, a condensed json file, a raw json file, and a BloodHound compatible azgroups file
 
 # Installation
 

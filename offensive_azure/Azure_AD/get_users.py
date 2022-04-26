@@ -288,6 +288,8 @@ def main():
 			sys.exit()
 		graph_token = json_data['access_token']
 
+
+	# Getting our first (only?) page of user results
 	headers = {
 		'Authorization': 'Bearer ' + graph_token
 	}
@@ -309,6 +311,8 @@ def main():
 	except KeyError:
 		next_link = None
 
+	# If next_link is not None, then the results are paged
+	# We iterate through the paged results to build out our full user list
 	while next_link is not None:
 		response = requests.get(next_link, headers=headers).json()
 		response_users = response['value']
@@ -320,6 +324,7 @@ def main():
 		except KeyError:
 			next_link = None
 
+	# Go through our raw json response data and build out a more readable user collection
 	condensed_json_data = {'users': {}}
 	for object_id, values in users_result.items():
 		condensed_json_data['users'][object_id] = {}
