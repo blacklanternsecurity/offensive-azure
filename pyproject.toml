@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "offensive_azure"
-version = "0.4.9"
+version = "0.4.10"
 description = "Collection of tools for attacking Microsoft Cloud products"
 authors = ["Cody Martin <debifrank00@gmail.com>"]
 license = "GPL-3.0"
@@ -16,6 +16,10 @@ read_token = 'offensive_azure.Access_Tokens.read_token:main'
 get_groups = 'offensive_azure.Azure_AD.get_groups:main'
 get_users = 'offensive_azure.Azure_AD.get_users:main'
 get_tenant = 'offensive_azure.Azure_AD.get_tenant:main'
+get_group_members = 'offensive_azure.Azure_AD.get_group_members:main'
+get_subscriptions = 'offensive_azure.Azure_AD.get_subscriptions:main'
+get_resource_groups = 'offensive_azure.Azure_AD.get_resource_groups:main'
+get_vms = 'offensive_azure.Azure_AD.get_vms:main'
 
 [tool.poetry.dependencies]
 python = "^3.8"

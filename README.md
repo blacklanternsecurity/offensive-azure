@@ -27,7 +27,18 @@ Collection of offensive tools targeting Microsoft Azure written in Python to be 
 - [`./Azure_AD/get_groups.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
   - Takes in an access token or refresh token, outputs all groups in Azure AD and all available group properties in Microsoft Graph
   - Creates three data files, a condensed json file, a raw json file, and a BloodHound compatible azgroups file
-
+- [`./Azure_AD/get_group_members.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
+  - Takes in an access token or refresh token, outputs all group memberships in Azure AD and all available group member properties in Microsoft Graph
+  - Creates three data files, a condensed json file, a raw json file, and a BloodHound compatible azgroups file
+- [`./Azure_AD/get_subscriptions.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
+  - Takes in an ARM token or refresh token, outputs all subscriptions in Azure and all available subscription properties in Azure Resource Manager
+  - Creates three data files, a condensed json file, a raw json file, and a BloodHound compatible azgroups file
+- [`./Azure_AD/get_resource_groups.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
+  - Takes in an ARM token or refresh token, outputs all resource groups in Azure and all available resource group properties in Azure Resource Manager
+  - Creates two data files, a raw json file, and a BloodHound compatible azgroups file
+- [`./Azure_AD/get_vms.py`](https://github.com/blacklanternsecurity/offensive-azure/tree/main/Azure_AD)
+  - Takes in an ARM token or refresh token, outputs all virtual machines in Azure and all available VM properties in Azure Resource Manager
+  - Creates two data files, a raw json file, and a BloodHound compatible azgroups file
 # Installation
 
 Offensive Azure can be installed in a number of ways or not at all. 
