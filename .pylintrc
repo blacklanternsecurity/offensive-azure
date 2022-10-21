@@ -4,4 +4,4 @@ indent-string='\t'
 
 [MESSAGES CONTROL]
 
-disable=too-many-branches, too-many-statements, too-many-locals, duplicate-code, too-many-nested-blocks
+disable=too-many-branches, too-many-statements, too-many-locals, duplicate-code, too-many-nested-blocks, missing-timeout
