@@ -4,4 +4,5 @@ colorama==0.4.4
 dnspython==2.2.1
 idna==3.3
 requests==2.27.1
+whois==0.9.20
 urllib3==1.26.9
