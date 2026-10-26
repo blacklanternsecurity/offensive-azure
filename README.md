@@ -83,3 +83,9 @@ pipenv shell
 pip install offensive_azure
 outsider_recon your-domain.com
 ```
+
+## License
+
+Copyright (C) 2022 Black Lantern Security
+
+Licensed under the GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`). See [LICENSE](LICENSE).
